@@ -36,17 +36,22 @@ class MyFitnessPalClient():
 
         return nutrition_data_df
 
+    def download_format_data(self, filename):
+        self.client = myfitnesspal.Client(username="vdomingu3z")
+        weight_data_df = self.get_weight_data_df()
+        nutrition_data_df = self.get_nutrition_data_df()
+        mfp_df = pd.concat([weight_data_df, nutrition_data_df], axis=1)
+        mfp_df.index = pd.to_datetime(mfp_df.index)
+        mfp_df.to_csv(filename)
+
+        return mfp_df
+
     def get_myfitnesspal_df(self):
 
         filename = f"weight_data/my_fitnesspal_data_from_{self.start_date}.csv"
 
         if not os.path.exists(filename) or self.manual_download:
-            self.client = myfitnesspal.Client(username="vdomingu3z")
-            weight_data_df = self.get_weight_data_df()
-            nutrition_data_df = self.get_nutrition_data_df()
-            mfp_df = pd.concat([weight_data_df, nutrition_data_df], axis=1)
-            mfp_df.index = pd.to_datetime(mfp_df.index)
-            mfp_df.to_csv(f"my_fitnesspal_data_from_{self.start_date}.csv")
+            mfp_df = self.download_format_data(filename)
         
         else:
             mfp_df = pd.read_csv(filename)
