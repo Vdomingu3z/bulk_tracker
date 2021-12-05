@@ -132,7 +132,7 @@ class BulkTracker:
         Calculate the rolling difference between 2 weeks worth of data.
         """
         # NOTE: this returns a Series of weight differences calculated from the 'Weight' column.
-        return self.df.rolling(2).agg({'weight': lambda x: max(x) - min(x)}).weight.values
+        return self.df.weight.diff().values
 
     def calculate_weeks_in_bulk(self, weight_col) -> int:
         """Return the number of weeks in the bulk."""
