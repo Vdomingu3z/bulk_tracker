@@ -5,8 +5,9 @@ import os
 
 class MyFitnessPalClient():
 
-    def __init__(self, start_date, manual_download=False):
+    def __init__(self, start_date, end_date=None, manual_download=False):
         self.start_date = start_date
+        self.end_date = end_date if end_date else datetime.date.today()
         self.manual_download = manual_download
 
     def get_weight_data(self):
@@ -27,7 +28,7 @@ class MyFitnessPalClient():
 
     def get_nutrition_data_df(self):
         
-        date_list = pd.date_range(start=self.start_date, end=datetime.date.today())
+        date_list = pd.date_range(start=self.start_date, end=self.end_date)
         calorie_list = [self.client.get_date(date).totals.get("calories") for date in date_list]
 
         nutrition_data_dict = {"calories": calorie_list, "Date": date_list}
@@ -37,7 +38,7 @@ class MyFitnessPalClient():
         return nutrition_data_df
 
     def download_format_data(self, filename):
-        self.client = myfitnesspal.Client(username="vdomingu3z")
+        self.client = myfitnesspal.Client(username="vdomingu3z", password="Sasuke556!")
         weight_data_df = self.get_weight_data_df()
         nutrition_data_df = self.get_nutrition_data_df()
         mfp_df = pd.concat([weight_data_df, nutrition_data_df], axis=1)
@@ -59,3 +60,11 @@ class MyFitnessPalClient():
             mfp_df.set_index("Date", inplace=True)
 
         return mfp_df
+
+if __name__ == "__main__":
+    START_DATE = datetime.datetime(2022, 7, 1)
+    manual_download = True
+
+
+    mfpc = MyFitnessPalClient(start_date=START_DATE, manual_download=manual_download)
+    mfpc.download_format_data('my_file.csv')

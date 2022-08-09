@@ -1,4 +1,5 @@
 import datetime
+import pdb
 from myfitnesspal_client.myfitnesspal_client import MyFitnessPalClient
 
 import matplotlib.pyplot as plt
@@ -105,7 +106,7 @@ class BulkTracker:
         self.df["weeks_from_start"] = (self.df.index - self.df.index[0]).days / 7
 
         # Get weekly data df, which is calorie and weight data from myfitnesspal.
-        weekly_data_df = self.get_weekly_data_df()
+        weekly_data_df = self.get_weekly_data_df().dropna()
         self.start_weight = weekly_data_df["weight"].values[0]
 
         # Generate weight goals, bounds, set columns to df.
